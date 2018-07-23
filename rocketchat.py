@@ -2,7 +2,7 @@ from MeteorClient import MeteorClient
 import time
 
 class RocketChatBot():
-    def __init__(self, user, password, server='demo.rocket.chat'):
+    def __init__(self, user, password, server='utilities.spencer.org.uk'):
         self.username = user
         self.password = password
         self.server = server
@@ -10,7 +10,7 @@ class RocketChatBot():
 
         self._prefixs = []
 
-        self.client = client = MeteorClient('wss://demo.rocket.chat/websocket')
+        self.client = client = MeteorClient('wss://utilities.spencer.org.uk/websocket')
 
         # registering internal handlers
         self.client.on('connected', self._connected)
@@ -27,7 +27,9 @@ class RocketChatBot():
     """
     def _connected(self):
         print("[+] rocketchat: connected")
-        self.client.subscribe('stream-messages', [], self.cb1)
+        self.client.subscribe('stream-room-messages', ['test-channel', False], self.cb1)
+        print("[?] test")
+        all_rooms = self.client.find('rooms/get')
 
     def _closed(self, code, reason):
         print('[-] rocketchat: connection closed: %s (%d)' % (reason, code))
@@ -40,6 +42,7 @@ class RocketChatBot():
 
     def _added(self, collection, id, fields):
         print('[+] %s: %s' % (collection, id))
+        print('[+] %s: %s' % (collection, fields))
 
         if not fields.get('args'):
             return
