@@ -17,3 +17,5 @@ rocket = RocketChatBot('username', 'password')
 rocket.addPrefixHandler('hello', hello)
 rocket.start()
 ```
+
+Please note that the root directory should be renamed 'deps' in line with import.
