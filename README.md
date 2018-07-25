@@ -8,10 +8,14 @@ or
 
 # usage
 ```
-def hello(bot, message):
-    bot.sendMessage(message['rid'], "React from hello command")
+from deps.rocketchat import *
+
+def hello(bot, fields):
+    bot.sendMessage(fields['args'][0]['rid'], "React from hello command")
 
 rocket = RocketChatBot('username', 'password')
 rocket.addPrefixHandler('hello', hello)
 rocket.start()
 ```
+
+Please note that the root directory should be renamed 'deps' in line with import.

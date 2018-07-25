@@ -27,7 +27,7 @@ class RocketChatBot():
     """
     def _connected(self):
         print("[+] rocketchat: connected")
-        self.client.subscribe('stream-room-messages', ['test-channel', False], self.cb1)
+        self.client.subscribe('stream-room-messages', ['<INSERT>', False], self.cb1)
         print("[?] test")
         all_rooms = self.client.find('rooms/get')
 
@@ -75,6 +75,12 @@ class RocketChatBot():
 
         for key, value in cleared.items():
             print('[+]  cleared %s: %s' % (key, value))
+        
+        for prefix in self._prefixs:
+            if 'args' in fields:
+                if 'msg' in fields['args'][0]:
+                    if fields['args'][0]['msg'].startswith(prefix['prefix']):
+                        prefix['handler'](self, fields)
 
     def _subscribed(self, subscription):
         print('[+] subscribed: %s' % subscription)
