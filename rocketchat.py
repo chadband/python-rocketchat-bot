@@ -2,7 +2,7 @@ from MeteorClient import MeteorClient
 import time
 
 class RocketChatBot():
-    def __init__(self, user, password, server='utilities.spencer.org.uk'):
+    def __init__(self, user, password, server='localhost:3000'):
         self.username = user
         self.password = password
         self.server = server
@@ -10,7 +10,7 @@ class RocketChatBot():
 
         self._prefixs = []
 
-        self.client = client = MeteorClient('wss://utilities.spencer.org.uk/websocket')
+        self.client = client = MeteorClient('ws://localhost:3000/websocket')
 
         # registering internal handlers
         self.client.on('connected', self._connected)
@@ -27,7 +27,7 @@ class RocketChatBot():
     """
     def _connected(self):
         print("[+] rocketchat: connected")
-        self.client.subscribe('stream-room-messages', ['<INSERT>', False], self.cb1)
+        self.client.subscribe('stream-room-messages', ['GENERAL', False], self.cb1)
         print("[?] test")
         all_rooms = self.client.find('rooms/get')
 
@@ -75,12 +75,14 @@ class RocketChatBot():
 
         for key, value in cleared.items():
             print('[+]  cleared %s: %s' % (key, value))
-        
+
         for prefix in self._prefixs:
             if 'args' in fields:
                 if 'msg' in fields['args'][0]:
-                    if fields['args'][0]['msg'].startswith(prefix['prefix']):
-                        prefix['handler'](self, fields)
+                    # Need to ensure that the bot is not responding to its own messages.
+                    if fields['args'][0]['u']['username'] != self.username:
+                        if fields['args'][0]['msg'].startswith(prefix['prefix']):
+                            prefix['handler'](self, fields)
 
     def _subscribed(self, subscription):
         print('[+] subscribed: %s' % subscription)
