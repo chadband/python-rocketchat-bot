@@ -1,4 +1,4 @@
-from rocketchat import *
+from rocketchat import RocketChatBot
 import re
 
 """
@@ -53,7 +53,7 @@ def sumup(bot, fields):
 
 
 
-rocket = RocketChatBot('admin', 'admin')
+rocket = RocketChatBot('admin', 'admin', server='localhost:3000', secure=False, channel_id='GENERAL')
 rocket.addPrefixHandler('hello', hello)
 rocket.addPrefixHandler('sum', sumup)
 rocket.start()
